@@ -11,7 +11,7 @@ import java.util.*;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Integer, Film> films = new HashMap<>();
-    //private final Set<Integer> userLikeFilm = new HashSet<>();
+
     private int generator = 1;
 
     @Override

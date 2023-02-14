@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class UserService {
 
-    InMemoryUserStorage inMemoryUserStorage;
+    private InMemoryUserStorage inMemoryUserStorage;
 
     @Autowired
     public UserService(InMemoryUserStorage inMemoryUserStorage) {

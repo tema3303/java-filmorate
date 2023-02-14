@@ -22,14 +22,14 @@ public class Film {
     @Positive
     private final int duration;
     private Integer rating;
-    Set<Integer> userLikeFilm = new HashSet<>();
+    private Set<Integer> userLikeFilm = new HashSet<>();
 
     public Film(String name, String description, LocalDate releaseDate, int duration, Integer rating) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        if (rating == null || rating < 0) {
+        if (rating == null) {
             this.rating = 0;
         } else {
             this.rating = rating;

@@ -18,6 +18,7 @@ import java.util.List;
 public class FilmController {
 
     private final FilmService filmService;
+
     private final static Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @Autowired
@@ -33,7 +34,8 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.info("Сохранили фильм - " + film);
-        return filmService.create(film);
+        filmService.create(film);
+        return film;
     }
 
     @PutMapping
@@ -43,15 +45,15 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable Integer id) {
-        return filmService.getFilmById(id);
+    public ResponseEntity<Film> getFilmById(@PathVariable Integer id) {
+        return new ResponseEntity<>(filmService.getFilmById(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public ResponseEntity<Film> addLikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("Ставим лайк фильму - " + filmService.getFilmById(id));
         filmService.addLikeFilm(id, userId);
-        return new ResponseEntity<>(filmService.getFilmById(id), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/like/{userId}")

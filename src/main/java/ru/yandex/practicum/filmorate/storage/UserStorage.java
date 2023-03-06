@@ -11,7 +11,5 @@ public interface UserStorage {
 
     User update(User user);
 
-    void delete(Integer id);
-
     User getUserById(Integer id);
 }

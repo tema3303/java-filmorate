@@ -1,23 +1,14 @@
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (1,'Комедия');
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (2,'Драма');
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (3,'Мультфильм');
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (4,'Триллер');
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (5,'Документальный');
-INSERT INTO GENRE (GENRE_ID,NAME)
-VALUES (6,'Боевик');
+INSERT INTO genre (genre_id,name) VALUES
+(1,'Комедия'),
+(2,'Драма'),
+(3,'Мультфильм'),
+(4,'Триллер'),
+(5,'Документальный'),
+(6,'Боевик');
 
-INSERT INTO MPA(MPA_ID,MPA_NAME)
-VALUES (1,'G');
-INSERT INTO MPA(MPA_ID,MPA_NAME)
-VALUES (2,'PG');
-INSERT INTO MPA(MPA_ID,MPA_NAME)
-VALUES (3,'PG-13');
-INSERT INTO MPA(MPA_ID,MPA_NAME)
-VALUES (4,'R');
-INSERT INTO MPA(MPA_ID,MPA_NAME)
-VALUES (5,'NC-17');
+INSERT INTO mpa(mpa_id,mpa_name) VALUES
+(1,'G'),
+(2,'PG'),
+(3,'PG-13'),
+(4,'R'),
+(5,'NC-17');

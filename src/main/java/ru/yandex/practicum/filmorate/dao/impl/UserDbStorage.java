@@ -21,8 +21,8 @@ public class UserDbStorage implements UserDao {
 
     @Override
     public List<User> findAll() {
-        String sql = "SELECT USERS.USER_ID, USERS.EMAIL, USERS.LOGIN, USERS.NAME, USERS.BIRTHDAY " +
-                "FROM USERS";
+        String sql = "SELECT * " +
+                "FROM users";
         return jdbcTemplate.query(sql, this::mapRowToUser);
     }
 
@@ -36,7 +36,7 @@ public class UserDbStorage implements UserDao {
 
     @Override
     public User update(User user) {
-        String sql = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, NAME = ?, BIRTHDAY =? WHERE USER_ID = ?";
+        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday =? WHERE user_id = ?";
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getLogin(),
@@ -48,8 +48,8 @@ public class UserDbStorage implements UserDao {
 
     @Override
     public Optional<User> getUserById(Integer id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT USER_ID, EMAIL, LOGIN, NAME, BIRTHDAY " +
-                "FROM USERS WHERE USER_ID = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * " +
+                "FROM users WHERE user_id = ?", id);
         if (userRows.next()) {
             User user = new User(userRows.getString("EMAIL"),
                     userRows.getString("LOGIN"),
@@ -76,28 +76,28 @@ public class UserDbStorage implements UserDao {
 
     @Override
     public Boolean deleteFriend(Integer userId, Integer friendId) {
-        String sql = String.format("DELETE\nFROM FRIEND_STATUS\n " +
-                "WHERE USER_ID = %d AND FRIEND_ID = %d", userId, friendId);
+        String sql = String.format("DELETE\nFROM friend_status\n " +
+                "WHERE user_id = %d AND friend_id = %d", userId, friendId);
         return jdbcTemplate.update(sql) > 0;
     }
 
     @Override
     public List<User> getAllFriends(Integer id) {
-        String sql = String.format("SELECT USERS.USER_ID, USERS.EMAIL, USERS.LOGIN, USERS.NAME, USERS.BIRTHDAY\n " +
-                "FROM USERS\n JOIN FRIEND_STATUS FS on USERS.USER_ID = FS.FRIEND_ID\n " +
-                "WHERE FS.USER_ID = ?", id);
+        String sql = String.format("SELECT *\n " +
+                "FROM users AS u\n JOIN friend_status AS fs ON u.user_id = fs.friend_id\n " +
+                "WHERE fs.user_id = ?", id);
         return jdbcTemplate.query(sql, this::mapRowToUser, id);
     }
 
     @Override
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        String sql = String.format("SELECT USERS.USER_ID, USERS.EMAIL, USERS.LOGIN, USERS.NAME, USERS.BIRTHDAY\n " +
-                "FROM USERS" +
-                " JOIN FRIEND_STATUS AS FS on USERS.USER_ID = FS.FRIEND_ID " +
-                "WHERE FS.USER_ID = ? AND FS.FRIEND_ID IN" +
-                "(SELECT FRIEND_ID " +
-                "FROM FRIEND_STATUS " +
-                "WHERE USER_ID = ?)", userId, friendId);
+        String sql = String.format("SELECT *\n " +
+                "FROM users AS u" +
+                " JOIN friend_status AS fs ON u.user_id = fs.friend_id " +
+                "WHERE fs.user_id = ? AND fs.friend_id IN" +
+                "(SELECT friend_id " +
+                "FROM friend_status " +
+                "WHERE user_id = ?)", userId, friendId);
         return jdbcTemplate.query(sql, this::mapRowToUser, userId, friendId);
     }
 

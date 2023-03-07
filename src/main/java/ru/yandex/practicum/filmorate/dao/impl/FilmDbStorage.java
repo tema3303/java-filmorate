@@ -21,10 +21,10 @@ public class FilmDbStorage implements FilmDao {
 
     @Override
     public List<Film> findAll() {
-        String sql = "SELECT FILMS.FILM_ID, FILMS.NAME, FILMS.DESCRIPTION, FILMS.RELEASE_DATE, FILMS.DURATION, FILMS.RATE, FILMS" +
-                ".MPA_ID, M.MPA_NAME" +
-                " FROM FILMS " +
-                "JOIN MPA AS M ON FILMS.MPA_ID = M.MPA_ID";
+        String sql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f" +
+                ".mpa_id, m.mpa_name" +
+                " FROM films AS f " +
+                "JOIN mpa AS m ON f.mpa_id = m.mpa_id";
         return jdbcTemplate.query(sql, this::mapRowToFilm);
     }
 
@@ -38,8 +38,8 @@ public class FilmDbStorage implements FilmDao {
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION =?, RATE = ?, " +
-                "MPA_ID = ? WHERE FILM_ID = ?";
+        String sql = "UPDATE films SET name = ?, description = ?, release_date = ?, duration =?, rate = ?, " +
+                "mpa_id = ? WHERE film_id = ?";
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -53,10 +53,10 @@ public class FilmDbStorage implements FilmDao {
 
     @Override
     public Optional<Film> getFilmById(Integer id) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT FILMS.FILM_ID, FILMS.NAME, FILMS.DESCRIPTION, FILMS.RELEASE_DATE, FILMS.DURATION, FILMS.RATE, " +
-                "FILMS.MPA_ID, MPA.MPA_NAME" +
-                " FROM FILMS " +
-                "JOIN MPA ON FILMS.MPA_ID = MPA.MPA_ID WHERE FILM_ID = ?", id);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, " +
+                "f.mpa_id, m.mpa_name" +
+                " FROM films AS f " +
+                "JOIN mpa AS m ON f.mpa_id = m.mpa_id WHERE f.film_id = ?", id);
         if (filmRows.next()) {
             Film film = new Film(filmRows.getString("NAME"),
                     filmRows.getString("DESCRIPTION"),
@@ -85,37 +85,37 @@ public class FilmDbStorage implements FilmDao {
     }
 
     public boolean addLike(Integer idFilm, Integer idUser) {
-        String sql = String.format("INSERT INTO LIKES(FILM_ID, USER_ID) VALUES (%d, %d)", idFilm, idUser);
-        String sqlUpd = String.format("UPDATE FILMS SET RATE = RATE + 1 " +
-                "WHERE FILM_ID = %d", idFilm);
+        String sql = String.format("INSERT INTO likes(film_id, user_id) VALUES (%d, %d)", idFilm, idUser);
+        String sqlUpd = String.format("UPDATE films SET rate = rate + 1 " +
+                "WHERE film_id = %d", idFilm);
         jdbcTemplate.update(sqlUpd);
         jdbcTemplate.update(sql);
         return true;
     }
 
     public boolean deleteLike(Integer idFilm, Integer idUser) {
-        String sql = String.format("DELETE FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?", idFilm, idUser);
-        String sqlUpd = String.format("UPDATE FILMS SET RATE = RATE - 1 " +
-                "WHERE FILM_ID = %d", idFilm);
+        String sql = String.format("DELETE FROM likes WHERE film_id = ? AND user_id = ?", idFilm, idUser);
+        String sqlUpd = String.format("UPDATE films SET rate = rate - 1 " +
+                "WHERE film_id = %d", idFilm);
         jdbcTemplate.update(sqlUpd);
         jdbcTemplate.update(sql, idFilm, idUser);
         return true;
     }
 
     public List<Film> getMostPopularFilm(Integer count) {
-        String sql = String.format("SELECT FILMS.FILM_ID, FILMS.NAME, FILMS.DESCRIPTION, FILMS.RELEASE_DATE, FILMS.DURATION, FILMS.RATE, FILMS" +
-                ".MPA_ID, M.MPA_NAME" +
-                " FROM FILMS " +
-                "JOIN MPA AS M ON FILMS.MPA_ID = M.MPA_ID " +
-                "WHERE RATE > 0 " +
-                "ORDER BY RATE DESC " +
+        String sql = String.format("SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f" +
+                ".mpa_id, m.mpa_name" +
+                " FROM films AS f " +
+                "JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                "WHERE rate > 0 " +
+                "ORDER BY rate DESC " +
                 "LIMIT(%d)", count);
         return jdbcTemplate.query(sql, this::mapRowToFilm);
     }
 
     public boolean setGenre(Integer idGenre, Integer idFilm) {
         if (!findGenreToFilm(idGenre, idFilm)) {
-            String sql = String.format("INSERT INTO FILM_GENRES(GENRE_ID,FILM_ID) VALUES (%d, %d)", idGenre, idFilm);
+            String sql = String.format("INSERT INTO film_genres(genre_id,film_id) VALUES (%d, %d)", idGenre, idFilm);
             return jdbcTemplate.update(sql) == 1;
         }
         return true;
@@ -123,8 +123,8 @@ public class FilmDbStorage implements FilmDao {
 
     public boolean deleteGenre(Integer idGenre, Integer idFilm) {
         if (findGenreToFilm(idGenre, idFilm)) {
-            String sql = String.format("DELETE FROM FILM_GENRES " +
-                    "WHERE GENRE_ID = ? AND FILM_ID = ?", idGenre, idFilm);
+            String sql = String.format("DELETE FROM film_genres " +
+                    "WHERE genre_id = ? AND film_id = ?", idGenre, idFilm);
             return jdbcTemplate.update(sql, idGenre, idFilm) > 0;
         }
         return false;
@@ -132,8 +132,8 @@ public class FilmDbStorage implements FilmDao {
 
     private boolean findGenreToFilm(Integer idGenre, Integer idFilm) {
         String sql = String.format("SELECT COUNT(*) " +
-                "FROM FILM_GENRES\n" +
-                "WHERE GENRE_ID = %d AND FILM_ID = %d", idGenre, idFilm);
+                "FROM film_genres\n" +
+                "WHERE genre_id = %d AND film_id = %d", idGenre, idFilm);
         return jdbcTemplate.queryForObject(sql, Integer.class) == 1;
     }
 }

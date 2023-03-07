@@ -22,14 +22,14 @@ public class MpaDbStorage implements MpaDao {
     @Override
     public Collection<Mpa> findAll() {
         String sql = "SELECT * " +
-                "FROM MPA";
+                "FROM mpa";
         return jdbcTemplate.query(sql, this::mapRowToMap);
     }
 
     @Override
     public Optional<Mpa> getMpaById(Integer id) {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * " +
-                "FROM MPA WHERE MPA_ID = ?", id);
+                "FROM mpa WHERE mpa_id = ?", id);
         if (mpaRows.next()) {
             Mpa mpa = new Mpa(mpaRows.getString("MPA_NAME"));
             mpa.setId(mpaRows.getInt("MPA_ID"));

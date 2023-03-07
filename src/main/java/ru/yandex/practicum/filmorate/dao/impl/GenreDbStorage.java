@@ -22,14 +22,14 @@ public class GenreDbStorage implements GenreDao {
     @Override
     public Collection<Genre> findAll() {
         String sql = "SELECT * " +
-                "FROM GENRE";
+                "FROM genre";
         return jdbcTemplate.query(sql, this::mapRowToGenre);
     }
 
     @Override
     public String getGenreById(Integer id) {
-        String sqlQuery = String.format("SELECT NAME " +
-                "FROM GENRE WHERE GENRE_ID = %d", id);
+        String sqlQuery = String.format("SELECT name " +
+                "FROM genre WHERE genre_id = %d", id);
         List<String> names = jdbcTemplate.queryForList(sqlQuery, String.class);
         if (names.size() != 1) {
             throw new NotFoundException("Не корректный ID GENRE");
@@ -39,9 +39,9 @@ public class GenreDbStorage implements GenreDao {
 
     public List<Genre> getGenres(Integer idFilm) {
         ;
-        String sqlQuery = String.format("SELECT GENRE_ID\n" +
-                "FROM FILM_GENRES\n" +
-                "WHERE FILM_ID = %d", idFilm);
+        String sqlQuery = String.format("SELECT genre_id\n" +
+                "FROM film_genres\n" +
+                "WHERE film_id = %d", idFilm);
         List<Integer> idGenres = jdbcTemplate.queryForList(sqlQuery, Integer.class);
         List<Genre> genres = new ArrayList<>();
         for (Integer id : idGenres) {

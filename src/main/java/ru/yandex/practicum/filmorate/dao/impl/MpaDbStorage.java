@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -13,14 +14,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class MpaDbStorage implements MpaDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public MpaDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public Collection<Mpa> findAll() {

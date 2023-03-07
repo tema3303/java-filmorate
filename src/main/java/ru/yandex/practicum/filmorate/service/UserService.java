@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.impl.UserDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -10,14 +10,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
     private UserDbStorage userDbStorage;
-
-    @Autowired
-    public UserService(UserDbStorage userDbStorage) {
-        this.userDbStorage = userDbStorage;
-    }
 
     public Collection<User> findAll() {
         return userDbStorage.findAll();

@@ -1,5 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +18,9 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/mpa")
+@AllArgsConstructor
 public class MpaController {
     private MpaService mpaService;
-
-    @Autowired
-    public MpaController(MpaService mpaService) {
-        this.mpaService = mpaService;
-    }
 
     @GetMapping
     public Collection<Mpa> findAll() {

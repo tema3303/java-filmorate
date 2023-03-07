@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -15,14 +14,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<Film> findAll() {

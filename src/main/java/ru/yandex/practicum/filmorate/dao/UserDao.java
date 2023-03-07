@@ -10,7 +10,7 @@ import java.util.Optional;
 @Component
 public interface UserDao {
 
-    Collection<User> findAll();
+    List<User> findAll();
 
     int create(User user);
 

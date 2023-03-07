@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,17 +14,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
+@RequiredArgsConstructor
 public class UserDbStorage implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     @Override
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         String sql = "SELECT USERS.USER_ID, USERS.EMAIL, USERS.LOGIN, USERS.NAME, USERS.BIRTHDAY " +
                 "FROM USERS";
         return jdbcTemplate.query(sql, this::mapRowToUser);

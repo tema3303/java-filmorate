@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.impl.FilmDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -13,18 +13,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class FilmService {
 
     private FilmDbStorage filmDbStorage;
     private MpaService mpaService;
     private GenreService genreService;
-
-    @Autowired
-    public FilmService(FilmDbStorage filmDbStorage, MpaService mpaService, GenreService genreService) {
-        this.filmDbStorage = filmDbStorage;
-        this.mpaService = mpaService;
-        this.genreService = genreService;
-    }
 
     public Collection<Film> findAll() {
         var result = filmDbStorage.findAll();

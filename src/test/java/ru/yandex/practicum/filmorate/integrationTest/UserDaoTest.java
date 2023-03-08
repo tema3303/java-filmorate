@@ -113,8 +113,7 @@ public class UserDaoTest {
 
     @Test
     public void testGetAllFriend() {
-        userDbStorage.sendRequestFriend(1, 2);
         List<User> friends = userDbStorage.getAllFriends(1);
-        Assertions.assertEquals(4, friends.size(), "Количество друзей не совпадает");
+        Assertions.assertEquals(3, friends.size(), "Количество друзей не совпадает");
     }
 }

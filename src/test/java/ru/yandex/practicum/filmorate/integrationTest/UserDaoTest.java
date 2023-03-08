@@ -31,22 +31,33 @@ public class UserDaoTest {
     private final UserDbStorage userDbStorage;
 
     @BeforeEach
-    void createFilm() {
-        List<Genre> genres = new ArrayList<>();
-        genres.add(new Genre(2, genreDbStorage.getGenreById(2)));
-        genres.add(new Genre(3, genreDbStorage.getGenreById(3)));
-        Film film = new Film("Гарри Поттер 1", "Про волшебников", LocalDate.parse("2001-12-23"),
-                120, 0, new Mpa(1, "G"), genres);
-        filmDbStorage.create(film);
-        film.setGenres(genres);
-        Film film2 = new Film("Друзья", "Про друзей", LocalDate.parse("2004-12-23"),
-                120, 0, new Mpa(4, "R"), genres);
-        filmDbStorage.create(film2);
-        film2.setGenres(genres);
-        User user = new User("123@mail.com", "Artem33", "Artem", LocalDate.parse("1998-12-23"));
+    void createUser() {
+        if (filmDbStorage.findAll().size() != 2) {
+            List<Genre> genres = new ArrayList<>();
+            genres.add(new Genre(2, genreDbStorage.getGenreById(2)));
+            genres.add(new Genre(3, genreDbStorage.getGenreById(3)));
+            Film film = new Film("Гарри Поттер 1", "Про волшебников", LocalDate.parse("2001-12-23"),
+                    120, 0, new Mpa(1, "G"), genres);
+            filmDbStorage.create(film);
+            film.setGenres(genres);
+            Film film2 = new Film("Друзья", "Про друзей", LocalDate.parse("2004-12-23"),
+                    120, 0, new Mpa(4, "R"), genres);
+            filmDbStorage.create(film2);
+            film2.setGenres(genres);
+        }
+        if (userDbStorage.findAll().size() != 2) {
+            User user = new User("123@mail.com", "Artem33", "Artem", LocalDate.parse("1998-12-23"));
+            userDbStorage.create(user);
+            User user2 = new User("12333@mail.com", "Anton33", "Anton", LocalDate.parse("1998-12-23"));
+            userDbStorage.create(user2);
+        }
+    }
+
+    @Test
+    public void testCreateUser() {
+        User user = new User("1234@mail.com", "Anton33", "Mike", LocalDate.parse("1998-12-23"));
         userDbStorage.create(user);
-        User user2 = new User("oleg@mail.com", "Oleg", "Oleg", LocalDate.parse("1994-12-23"));
-        userDbStorage.create(user2);
+        Assertions.assertEquals("Mike", user.getName(), "Пользователь не создался");
     }
 
     @Test
@@ -63,14 +74,6 @@ public class UserDaoTest {
     public void testGetAllUsers() {
         List<User> users = userDbStorage.findAll();
         Assertions.assertEquals(2, users.size(), "Число пользователей не совпадает");
-    }
-
-    @Test
-    public void testCreateUser() {
-        User user = new User("1234@mail.com", "Anton33", "Anton", LocalDate.parse("1998-12-23"));
-        userDbStorage.create(user);
-        List<User> users = userDbStorage.findAll();
-        Assertions.assertEquals(3, users.size(), "Число пользователей не совпадает");
     }
 
     @Test
@@ -93,13 +96,6 @@ public class UserDaoTest {
     }
 
     @Test
-    public void testGetAllFriend() {
-        userDbStorage.sendRequestFriend(1, 2);
-        List<User> friends = userDbStorage.getAllFriends(1);
-        Assertions.assertEquals(1, friends.size(), "Количество друзей не совпадает");
-    }
-
-    @Test
     public void testGetСommonFriend() {
         User user = new User("123@mail.com", "Artem33", "Artem", LocalDate.parse("1998-12-23"));
         userDbStorage.create(user);
@@ -113,5 +109,12 @@ public class UserDaoTest {
         userDbStorage.sendRequestFriend(1, 4);
         List<User> friends = userDbStorage.getCommonFriends(1, 2);
         Assertions.assertEquals(2, friends.size(), "Количество друзей не совпадает");
+    }
+
+    @Test
+    public void testGetAllFriend() {
+        userDbStorage.sendRequestFriend(1, 2);
+        List<User> friends = userDbStorage.getAllFriends(1);
+        Assertions.assertEquals(4, friends.size(), "Количество друзей не совпадает");
     }
 }

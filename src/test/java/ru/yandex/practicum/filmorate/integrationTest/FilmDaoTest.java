@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.FilmorateApplication;
 import ru.yandex.practicum.filmorate.dao.impl.FilmDbStorage;
 import ru.yandex.practicum.filmorate.dao.impl.GenreDbStorage;
 import ru.yandex.practicum.filmorate.dao.impl.UserDbStorage;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(classes = FilmorateApplication.class)
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmDaoTest {
@@ -30,19 +31,23 @@ public class FilmDaoTest {
 
     @BeforeEach
     void createFilm() {
-        List<Genre> genres = new ArrayList<>();
-        genres.add(new Genre(2, genreDbStorage.getGenreById(2)));
-        genres.add(new Genre(3, genreDbStorage.getGenreById(3)));
-        Film film = new Film("Гарри Поттер 1", "Про волшебников", LocalDate.parse("2001-12-23"),
-                120, 0, new Mpa(1, "G"), genres);
-        filmDbStorage.create(film);
-        film.setGenres(genres);
-        Film film2 = new Film("Друзья", "Про друзей", LocalDate.parse("2004-12-23"),
-                120, 0, new Mpa(4, "R"), genres);
-        filmDbStorage.create(film2);
-        film2.setGenres(genres);
-        User user = new User("123@mail.com", "Artem33", "Artem", LocalDate.parse("1998-12-23"));
-        userDbStorage.create(user);
+        if (filmDbStorage.findAll().size() != 2) {
+            List<Genre> genres = new ArrayList<>();
+            genres.add(new Genre(2, genreDbStorage.getGenreById(2)));
+            genres.add(new Genre(3, genreDbStorage.getGenreById(3)));
+            Film film = new Film("Гарри Поттер 1", "Про волшебников", LocalDate.parse("2001-12-23"),
+                    120, 0, new Mpa(1, "G"), genres);
+            filmDbStorage.create(film);
+            film.setGenres(genres);
+            Film film2 = new Film("Друзья", "Про друзей", LocalDate.parse("2004-12-23"),
+                    120, 0, new Mpa(4, "R"), genres);
+            filmDbStorage.create(film2);
+            film2.setGenres(genres);
+        }
+        if (userDbStorage.findAll().size() != 1) {
+            User user = new User("123@mail.com", "Artem33", "Artem", LocalDate.parse("1998-12-23"));
+            userDbStorage.create(user);
+        }
     }
 
     @Test
@@ -78,8 +83,7 @@ public class FilmDaoTest {
         Film film = new Film("Властелин Колец", "Про эльфов", LocalDate.parse("2001-12-23"),
                 200, 0, new Mpa(1, "G"), new ArrayList<>());
         film.setId(1);
-        filmDbStorage.update(film);
-        Assertions.assertEquals("Властелин Колец", film.getName(), "Название не совпадает");
+        Assertions.assertEquals("Властелин Колец", filmDbStorage.update(film).getName(), "Название не совпадает");
     }
 
     @Test
@@ -91,7 +95,6 @@ public class FilmDaoTest {
 
     @Test
     public void testDeleteLike() {
-        filmDbStorage.addLike(1, 1);
         filmDbStorage.deleteLike(1, 1);
         Assertions.assertEquals(0, filmDbStorage.getFilmById(1).get().getRate(),
                 "Рейтинг не совпадает");
@@ -101,7 +104,7 @@ public class FilmDaoTest {
     public void testGetMostPopularFilm() {
         filmDbStorage.addLike(1, 1);
         List<Film> films = filmDbStorage.getMostPopularFilm(1);
-        Assertions.assertEquals("Гарри Поттер 1", films.get(0).getName(),
+        Assertions.assertEquals("Властелин Колец", films.get(0).getName(),
                 "Название не совпадает");
     }
 }

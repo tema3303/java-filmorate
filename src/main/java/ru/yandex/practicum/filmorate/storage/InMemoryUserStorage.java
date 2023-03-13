@@ -36,14 +36,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void delete(Integer id) {
-        if (!users.containsKey(id)) {
-            throw new ValidationException("Id пользователся отсуствует в списке");
-        }
-        users.remove(id);
-    }
-
-    @Override
     public User getUserById(Integer id) {
         notContain(id);
         return users.get(id);

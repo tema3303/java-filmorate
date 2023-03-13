@@ -33,7 +33,8 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Сохранили пользователя - " + user);
-        return userService.create(user);
+        user.setId(userService.create(user));
+        return user;
     }
 
     @PutMapping
@@ -43,22 +44,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public ResponseEntity<Boolean> addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("Добавляем в друзья пользователя - " + userService.getUserById(friendId));
-        userService.addFriend(id, friendId);
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.addFriend(id, friendId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public ResponseEntity<User> deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public ResponseEntity<Boolean> deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("Удаляем их друзей пользователя - " + userService.getUserById(friendId));
-        userService.deleteFriend(id, friendId);
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+        return new ResponseEntity<>(userService.deleteFriend(id, friendId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/friends")

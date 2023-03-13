@@ -4,8 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class Film {
@@ -20,29 +19,38 @@ public class Film {
     private final LocalDate releaseDate;
 
     @Positive
-    private final int duration;
-    private Integer rating;
-    private Set<Integer> userLikeFilm = new HashSet<>();
+    private final Integer duration;
+    private Integer rate; //количество лайков
+    private Mpa mpa;
+    private Collection<Genre> genres;
 
-    public Film(String name, String description, LocalDate releaseDate, int duration, Integer rating) {
+    public Film(String name, String description, LocalDate releaseDate, int duration, Integer rate, Mpa mpa,
+                List<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        if (rating == null) {
-            this.rating = 0;
+        if (rate == null) {
+            this.rate = 0;
         } else {
-            this.rating = rating;
+            this.rate = rate;
+        }
+        this.mpa = mpa;
+        if (genres == null) {
+            this.genres = new ArrayList<>();
+        } else {
+            this.genres = genres;
         }
     }
 
-    public void addLike(Integer idUser) {
-        userLikeFilm.add(idUser);
-        rating = userLikeFilm.size();
-    }
-
-    public void deleteLike(Integer idUser) {
-        rating = userLikeFilm.size();
-        userLikeFilm.remove(idUser);
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("NAME", name);
+        values.put("DESCRIPTION", description);
+        values.put("RELEASE_DATE", releaseDate);
+        values.put("DURATION", duration);
+        values.put("RATE", rate);
+        values.put("MPA_ID", mpa.getId());
+        return values;
     }
 }
